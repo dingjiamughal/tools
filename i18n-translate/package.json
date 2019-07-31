@@ -1,0 +1,28 @@
+{
+  "name": "i18n-translate",
+  "version": "1.0.0",
+  "description": "兼容`.vue` `yml`",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "dev": "nodemon --exec babel-node index.js",
+    "dev:generate": "nodemon --exec babel-node generate.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/node": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "nodemon": "^1.19.1"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "js-yaml": "^3.13.1",
+    "json2csv": "^4.5.2",
+    "lodash": "^4.17.15"
+  }
+}
