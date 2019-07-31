@@ -7,7 +7,7 @@ import yaml from 'js-yaml';
 import {Parser} from 'json2csv';
 import {flattenObj, unflattenObj} from './flatten';
 
-const ROOT = path.join(__dirname, '../test');
+const ROOT = path.join(__dirname, '../source');
 const EFFECTEXT = ['.vue', '.yaml'];
 
 let container = [];
