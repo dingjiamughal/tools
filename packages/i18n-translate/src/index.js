@@ -12,6 +12,9 @@ const EFFECTEXT = ['.vue', '.yaml'];
 
 let container = [];
 
+/**
+ * translate 把所有涉及翻译相关导出成一份CSV
+ */
 async function generateCSV() {
     const data = await getJSON(ROOT);
 
@@ -20,9 +23,21 @@ async function generateCSV() {
     const csv = json2csvParser.parse(data);
     const writeFile = promisify(fs.writeFile);
     await writeFile(path.resolve(__dirname, './result.csv'), csv);
+
+    console.log('write csv success');
 }
 
-function feed() {}
+/**
+ * 修改完的新CSV，再覆盖原先代码
+ */
+function feed() {
+    const csvData = fs.readFileSync(path.resolve(__dirname, './result.csv'), 'utf8');
+    console.log(csvData);
+
+    //csv2json
+
+    // ...
+}
 
 async function getJSON(dir) {
     // const readDir = promisify(fs.readdir);
@@ -45,17 +60,6 @@ async function getJSON(dir) {
                 const json = yaml.safeLoad($('i18n').text());
 
                 // 解析json
-                // cn: {
-                //     a: 'a',
-                //     b: 'b',
-                //     c: {
-                //         c1: 'c1',
-                //         c2: {                 ---->  cn.c.c2.c2_1 = 'c2_1'
-                //             c2_1: 'c2_1',
-                //             c2_2: 'c2_2'
-                //         }
-                //     }
-                // }}
                 json.en = _.merge(json.en, json.cn);
                 const flattenResult = flattenObj(json);
                 Object.entries(flattenResult).forEach(([key, value]) => {
@@ -93,5 +97,6 @@ async function getJSON(dir) {
 
 
 export {
-    generateCSV
+    generateCSV,
+    feed
 };
