@@ -4,9 +4,8 @@ import _ from 'lodash';
 import {promisify} from 'util';
 import cheerio from 'cheerio';
 import yaml from 'js-yaml';
-import {Parser} from 'json2csv';
 import {flattenObj, unflattenObj} from './flatten';
-
+import {json2csv} from './convert';
 const ROOT = path.join(__dirname, '../source');
 const EFFECTEXT = ['.vue', '.yaml'];
 
@@ -17,10 +16,8 @@ let container = [];
  */
 async function generateCSV() {
     const data = await getJSON(ROOT);
-
-    const fields = ['lang', 'path', 'key', 'value'];
-    const json2csvParser = new Parser({fields});
-    const csv = json2csvParser.parse(data);
+    const csv = json2csv(data);
+    // console.log(csv)
     const writeFile = promisify(fs.writeFile);
     await writeFile(path.resolve(__dirname, './result.csv'), csv);
 
