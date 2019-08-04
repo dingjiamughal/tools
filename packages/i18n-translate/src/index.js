@@ -6,6 +6,7 @@ import cheerio from 'cheerio';
 import yaml from 'js-yaml';
 import {flattenObj, unflattenObj} from './flatten';
 import {json2csv} from './convert';
+
 const ROOT = path.join(__dirname, '../source');
 const EFFECTEXT = ['.vue', '.yaml'];
 
@@ -26,9 +27,11 @@ async function generateCSV() {
 
 /**
  * 修改完的新CSV，再覆盖原先代码
+ * 1. 找到
  */
 function feed() {
-    const csvData = fs.readFileSync(path.resolve(__dirname, './result.csv'), 'utf8');
+    const csvDataPrev = fs.readFileSync(path.resolve(__dirname, './result.copy.csv'), 'utf8');
+    const csvDataNew = fs.readFileSync(path.resolve(__dirname, './result.csv'), 'utf8');
     console.log(csvData);
 
     //csv2json
@@ -57,16 +60,7 @@ async function getJSON(dir) {
                 const json = yaml.safeLoad($('i18n').text());
 
                 // 解析json
-                json.en = _.merge(json.en, json.cn);
-                const flattenResult = flattenObj(json);
-                Object.entries(flattenResult).forEach(([key, value]) => {
-                    container.push({
-                        lang: key.substr(0, 2),
-                        path: dir + path.sep + item,
-                        key,
-                        value
-                    });
-                });
+                handleFilter(json, dir + path.sep + item);
             }
 
             if (ext === '.yaml') {
@@ -75,16 +69,7 @@ async function getJSON(dir) {
                 const yamlContent = fs.readFileSync(dir + '/' + item, 'utf8');
                 const json = yaml.safeLoad(yamlContent);
 
-                json.en = _.merge(json.en, json.cn);
-                const flattenResult = flattenObj(json);
-                Object.entries(flattenResult).forEach(([key, value]) => {
-                    container.push({
-                        lang: key.substr(0, 2),
-                        path: dir + path.sep + item,
-                        key,
-                        value
-                    });
-                });
+                handleFilter(json, dir + path.sep + item);
             }
         }
     });
@@ -92,6 +77,31 @@ async function getJSON(dir) {
     return container;
 }
 
+function handleFilter(json, path) {
+    json.en = json.en && typeof json.en === 'object' ? json.en : {};
+
+    Object.keys(json.cn).forEach(key => {
+        const flattenResultCN = flattenObj({[key]: json.cn[key]});
+        const flattenResultEN = flattenObj({[key]: json.en[key]});
+        console.log(flattenResultCN);
+
+        Object.entries(flattenResultCN).forEach(([cnKey, cnVal]) => {
+            if(!flattenResultEN[cnKey]) {
+                container.push({
+                    lang: 'cn',
+                    path,
+                    key: cnKey,
+                    value: cnVal
+                },{
+                    lang: 'en',
+                    path,
+                    key: cnKey,
+                    value: ''
+                });
+            }
+        });
+    });
+}
 
 export {
     generateCSV,

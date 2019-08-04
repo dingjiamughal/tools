@@ -1,7 +1,7 @@
 export const flattenObj = (obj, {prevKey = '', segment = '.'} = {}) => {
     return Object.keys(obj).reduce((memo, next) => {
         const newKey = prevKey ? prevKey + segment + next : next;
-        const value = obj[next];
+        const value = obj[next] || '';
 
         if (typeof value === 'object' && !(value instanceof Array)) {
             memo = {...memo, ...flattenObj(value, {prevKey: newKey})};
