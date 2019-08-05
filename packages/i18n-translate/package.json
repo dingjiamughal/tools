@@ -8,7 +8,8 @@
   },
   "scripts": {
     "dev": "nodemon --exec babel-node index.js",
-    "dev:generate": "nodemon --exec babel-node generate.js"
+    "dev:generate": "nodemon --exec babel-node generate.js",
+    "dev:feed": "nodemon --exec babel-node feed.js"
   },
   "keywords": [],
   "author": "",

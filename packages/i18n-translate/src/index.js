@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import fs from 'fs';
 import path from 'path';
 import _ from 'lodash';
@@ -11,6 +13,7 @@ const ROOT = path.join(__dirname, '../source');
 const EFFECTEXT = ['.vue', '.yaml'];
 
 let container = [];
+console.log(process.argv);
 
 /**
  * translate 把所有涉及翻译相关导出成一份CSV
@@ -27,16 +30,59 @@ async function generateCSV() {
 
 /**
  * 修改完的新CSV，再覆盖原先代码
- * 1. 找到
+ * 1. pull一份本地csv
+ * 2. merge(local, new)
  */
 function feed() {
-    const csvDataPrev = fs.readFileSync(path.resolve(__dirname, './result.copy.csv'), 'utf8');
+    // const csvDataLocal = fs.readFileSync(path.resolve(__dirname, './result.copy.csv'), 'utf8');
     const csvDataNew = fs.readFileSync(path.resolve(__dirname, './result.csv'), 'utf8');
-    console.log(csvData);
 
-    //csv2json
+    const [fields, ...content] = csvDataNew.split('\r\n');
+    // console.log(content);
+    const stringParser = str => str.replace(/"/g, '');
 
-    // ...
+    // TODO: step1 + step2 并成一步，做不来
+
+    // step1 => [{path, key: value}, ...]
+    const array = content.reduce((memo, next) => {
+        const valItem = next.split(','); // lang path key value
+        memo.push({
+            path: stringParser(valItem[1]),
+            [stringParser(valItem[2])]: stringParser(valItem[3])
+        });
+        return memo;
+    }, []);
+
+    // 此时一个key value为一个block
+    // 希望文件只write一次
+    // 所以要以file为快
+
+    // step2 => [{fileName, content: {cn: ..., en: ....}}]
+    const fileArr = array.reduce((memo, next) => {
+        const {path, ...rest} = next;
+        const hasKey = memo.some(({fileName}) => fileName === path); // 找一下大集合里有没有路径
+
+        if (!hasKey) { // 如果没有这个文件，那直接添加完事
+            memo.push({
+                fileName: path,
+                content: {...unflattenObj(rest)}
+            });
+        }
+        else { // 如果有这个文件，把它添加到指定地方
+            const targetFile = memo.find(file => file.fileName === path);
+            targetFile.content = _.merge(targetFile.content, unflattenObj(rest));
+        }
+        return memo;
+    }, []);
+
+    console.log(JSON.stringify(fileArr));
+
+    // step3: hash 看看block前后csv有木有变化
+    // 判断有无变化也挺脏的，还不如每个文件都写一遍
+    // 但写文件过程容易出错，写多了出了问题不好改
+    // 寻思着这一步不能省略
+
+    // step4: 写文件
 }
 
 async function getJSON(dir) {
@@ -83,21 +129,13 @@ function handleFilter(json, path) {
     Object.keys(json.cn).forEach(key => {
         const flattenResultCN = flattenObj({[key]: json.cn[key]});
         const flattenResultEN = flattenObj({[key]: json.en[key]});
-        console.log(flattenResultCN);
 
         Object.entries(flattenResultCN).forEach(([cnKey, cnVal]) => {
-            if(!flattenResultEN[cnKey]) {
-                container.push({
-                    lang: 'cn',
-                    path,
-                    key: cnKey,
-                    value: cnVal
-                },{
-                    lang: 'en',
-                    path,
-                    key: cnKey,
-                    value: ''
-                });
+            if (!flattenResultEN[cnKey]) {
+                container.push(
+                    {lang: 'cn', path, key: 'cn.' + cnKey, value: cnVal},
+                    {lang: 'en', path, key: 'en.' + cnKey, value: ''}
+                );
             }
         });
     });
