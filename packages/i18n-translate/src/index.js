@@ -6,8 +6,9 @@ import _ from 'lodash';
 import {promisify} from 'util';
 import cheerio from 'cheerio';
 import yaml from 'js-yaml';
-import {flattenObj, unflattenObj} from './flatten';
-import {json2csv} from './convert';
+import {flattenObj} from './flatten';
+import {json2csv, merge} from './convert';
+import md5 from 'js-md5';
 
 const ROOT = path.join(__dirname, '../source');
 const EFFECTEXT = ['.vue', '.yaml'];
@@ -34,54 +35,33 @@ async function generateCSV() {
  * 2. merge(local, new)
  */
 function feed() {
-    // const csvDataLocal = fs.readFileSync(path.resolve(__dirname, './result.copy.csv'), 'utf8');
+    const csvDataLocal = fs.readFileSync(path.resolve(__dirname, './result.copy.csv'), 'utf8');
     const csvDataNew = fs.readFileSync(path.resolve(__dirname, './result.csv'), 'utf8');
 
-    const [fields, ...content] = csvDataNew.split('\r\n');
+    const [localFields, ...localContent] = csvDataLocal.split('\r\n');
+    const [newFields, ...newContent] = csvDataNew.split('\r\n');
     // console.log(content);
-    const stringParser = str => str.replace(/"/g, '');
+    
 
-    // TODO: step1 + step2 并成一步，做不来
 
-    // step1 => [{path, key: value}, ...]
-    const array = content.reduce((memo, next) => {
-        const valItem = next.split(','); // lang path key value
-        memo.push({
-            path: stringParser(valItem[1]),
-            [stringParser(valItem[2])]: stringParser(valItem[3])
-        });
-        return memo;
-    }, []);
-
-    // 此时一个key value为一个block
-    // 希望文件只write一次
-    // 所以要以file为快
-
-    // step2 => [{fileName, content: {cn: ..., en: ....}}]
-    const fileArr = array.reduce((memo, next) => {
-        const {path, ...rest} = next;
-        const hasKey = memo.some(({fileName}) => fileName === path); // 找一下大集合里有没有路径
-
-        if (!hasKey) { // 如果没有这个文件，那直接添加完事
-            memo.push({
-                fileName: path,
-                content: {...unflattenObj(rest)}
-            });
-        }
-        else { // 如果有这个文件，把它添加到指定地方
-            const targetFile = memo.find(file => file.fileName === path);
-            targetFile.content = _.merge(targetFile.content, unflattenObj(rest));
-        }
-        return memo;
-    }, []);
-
-    console.log(JSON.stringify(fileArr));
+    const localData = merge(localContent);
+    const newData = merge(newContent);
+    // console.log(JSON.stringify(newData))
 
     // step3: hash 看看block前后csv有木有变化
     // 判断有无变化也挺脏的，还不如每个文件都写一遍
     // 但写文件过程容易出错，写多了出了问题不好改
     // 寻思着这一步不能省略
 
+    Object.entries(newData).forEach(([key, newValue]) => {
+        const localValue = localData[key];
+
+        // 这个文件毫无改动
+        if (localValue && md5(JSON.stringify(newValue)) === md5(JSON.stringify(localValue))) {
+            delete newData[key];
+        }
+    });
+    console.log(newData);
     // step4: 写文件
 }
 
