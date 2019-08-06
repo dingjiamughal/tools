@@ -1,3 +1,8 @@
-import {feed} from './src';
+import {generateCSV, feed} from './src';
 
-feed();
+async function start() {
+    await generateCSV();
+    feed();
+}
+
+start();
