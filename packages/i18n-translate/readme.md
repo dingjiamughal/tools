@@ -22,3 +22,18 @@ ichuan feed source src result.csv result.new.csv
 npm run build
 ```
 没有引入core，所以要求node 8+
+
+### example
+```
+git clone https://github.com/dingjiamughal/tools.git
+npm install
+npm run bootstrap
+cd packages/i18n-translate
+<!-- 本地测试 -->
+npm run dev:generate
+npm run dev:feed
+<!-- ichuan -->
+npm install ichuan -g
+ichuan generate source src result.csv
+ichuan feed source src result.csv result.new.csv
+```

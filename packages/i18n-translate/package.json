@@ -1,6 +1,6 @@
 {
   "name": "ichuan",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "a i18n translate tool",
   "main": "index.js",
   "directories": {
