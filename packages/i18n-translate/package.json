@@ -1,7 +1,7 @@
 {
-  "name": "translate-djtest-pkg",
-  "version": "1.0.18",
-  "description": "a translate tool",
+  "name": "ichuan",
+  "version": "1.0.0",
+  "description": "a i18n translate tool",
   "main": "index.js",
   "directories": {
     "test": "test"
@@ -17,8 +17,13 @@
     "lib:generate": "node ./bin/generate.js source src result.csv"
   },
   "keywords": [],
-  "author": "",
+  "author": "dingjiamughal",
   "license": "ISC",
+  "repository": {
+		"type": "git",
+		"url": "https://github.com/dingjiamughal/tools.git"
+  },
+  "homepage": "https://github.com/dingjiamughal/tools/tree/master/packages/i18n-translate",
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/node": "^7.5.5",

@@ -1,23 +1,24 @@
-i18n翻译工具，兼容`.vue` `yml`
+ichuan---i18n翻译工具，兼容`.vue` `.yaml`
 
 ### intall
 ```
-npm install translate-djtest-pkg -g
+npm install ichuan -g
 ```
 
 ### usage
-导出翻译文件csv
+生成翻译文件
 ```
 ichuan generate <翻译文件根目录> <csv存放路径> <csv名称>
-e.g
-ichuan generate source_dir csv_dir result.csv
+ichuan generate source src result.csv
 ```
-把编辑完的结果和本地资源合并
+合并结果
 ```
 ichuan feed <翻译文件根目录> <csv存放路径> <csv名称> <新csv名称>
-e.g
-ichuan feed source_dir csv_dir result.csv result.new.csv
+ichuan feed source src result.csv result.new.csv
 ```
 
-### 打包工具
-rollup => 没有引入core，所以要求node 8+
+### bundler
+```
+npm run build
+```
+没有引入core，所以要求node 8+
