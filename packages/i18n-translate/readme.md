@@ -1,9 +1,23 @@
-兼容`.vue` `yml`
+i18n翻译工具，兼容`.vue` `yml`
 
-### 本地资源导出成csv
-> npm run generate
-导出的`csv`文件在`src`目录下
+### intall
+```
+npm install translate-djtest-pkg -g
+```
 
-### 把编辑完的结果植入本地资源
-> step1: 把`result.new.csv`放在`src`目录然后执行
-> step2: npm run feed
+### usage
+导出翻译文件csv
+```
+ichuan generate <翻译文件根目录> <csv存放路径> <csv名称>
+e.g
+ichuan generate source_dir csv_dir result.csv
+```
+把编辑完的结果和本地资源合并
+```
+ichuan feed <翻译文件根目录> <csv存放路径> <csv名称> <新csv名称>
+e.g
+ichuan generate source_dir csv_dir result.csv result.new.csv
+```
+
+### 打包工具
+rollup => 没有引入core，所以要求node 8+

@@ -1,15 +1,20 @@
 {
-  "name": "i18n-translate",
-  "version": "1.0.0",
-  "description": "兼容`.vue` `yml`",
+  "name": "translate-djtest-pkg",
+  "version": "1.0.18",
+  "description": "a translate tool",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
+  "bin": {
+    "ichuan": "bin/main"
+  },
   "scripts": {
-    "dev": "nodemon --exec babel-node index.js",
-    "generate": "nodemon --exec babel-node generate.js",
-    "feed": "nodemon --exec babel-node feed.js"
+    "dev:generate": "nodemon --exec babel-node generate generate.js source src result.csv",
+    "dev:feed": "nodemon --exec babel-node feed.js feed source src result.csv result.new.csv",
+    "build": "rollup -c",
+    "lib:feed": "node ./bin/feed.js source src result.csv result.new.csv",
+    "lib:generate": "node ./bin/generate.js source src result.csv"
   },
   "keywords": [],
   "author": "",
@@ -17,16 +22,22 @@
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/node": "^7.5.5",
+    "@babel/plugin-external-helpers": "^7.2.0",
+    "@babel/plugin-transform-regenerator": "^7.4.5",
+    "@babel/plugin-transform-runtime": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
-    "nodemon": "^1.19.1"
+    "nodemon": "^1.19.1",
+    "rollup": "^1.19.3",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-commonjs": "^10.0.2",
+    "rollup-plugin-node-resolve": "^5.2.0"
   },
   "dependencies": {
-    "chalk": "^2.4.2",
+    "@babel/runtime": "^7.5.5",
     "cheerio": "^1.0.0-rc.3",
     "js-md5": "^0.7.3",
     "js-yaml": "^3.13.1",
     "lodash": "^4.17.15",
-    "ora": "^3.4.0",
     "shelljs": "^0.8.3"
   }
 }

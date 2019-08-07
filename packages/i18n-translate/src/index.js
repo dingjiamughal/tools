@@ -10,7 +10,9 @@ import {json2csv, merge} from './convert';
 import md5 from 'js-md5';
 import getJSON from './get';
 
-const ROOT = path.join(__dirname, '../source');
+const ROOT = path.resolve('.', process.argv[3]);
+const exportPath = path.resolve('.', process.argv[4], process.argv[5]);
+
 
 /**
  * translate 把所有涉及翻译相关导出成一份CSV
@@ -20,7 +22,7 @@ export async function generateCSV() {
     const csv = json2csv(data);
     // console.log(csv)
     const writeFile = promisify(fs.writeFile);
-    await writeFile(path.resolve(__dirname, './result.csv'), csv);
+    await writeFile(exportPath, csv);
 }
 
 /**
@@ -29,8 +31,10 @@ export async function generateCSV() {
  * 2. merge(local, new)
  */
 export function feed() {
-    const csvDataLocal = fs.readFileSync(path.resolve(__dirname, './result.csv'), 'utf8');
-    const csvDataNew = fs.readFileSync(path.resolve(__dirname, './result.new.csv'), 'utf8');
+    const importPath = path.resolve('.', process.argv[4], process.argv[6]);
+
+    const csvDataLocal = fs.readFileSync(exportPath, 'utf8');
+    const csvDataNew = fs.readFileSync(importPath, 'utf8');
 
     const [localFields, ...localContent] = csvDataLocal.split('\r\n');
     const [newFields, ...newContent] = csvDataNew.split('\r\n');

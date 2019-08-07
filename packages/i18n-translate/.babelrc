@@ -1,3 +1,13 @@
 {
-  "presets": ["@babel/preset-env"]
+  "presets": [
+    [
+      // "@babel/preset-env", {"useBuiltIns": "usage"} // 似乎node版本高点就行，加了这个会增加相当多的core引用
+      "@babel/preset-env"
+    ]
+  ],
+  "plugins": [
+    "@babel/external-helpers",
+    // "@babel/plugin-transform-regenerator",
+    "@babel/plugin-transform-runtime"
+  ]
 }
