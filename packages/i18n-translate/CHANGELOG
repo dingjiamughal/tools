@@ -6,3 +6,7 @@ npm run generate
 ### 把编辑完的结果植入本地资源
 step1: 把`result.new.csv`放在`src`目录然后执行
 step2: npm run feed
+
+commit_id 3cd67a7
+集成为工具发布至npm
+npm install translate-djtest-pkg -g

@@ -16,7 +16,7 @@ ichuan generate source_dir csv_dir result.csv
 ```
 ichuan feed <翻译文件根目录> <csv存放路径> <csv名称> <新csv名称>
 e.g
-ichuan generate source_dir csv_dir result.csv result.new.csv
+ichuan feed source_dir csv_dir result.csv result.new.csv
 ```
 
 ### 打包工具
