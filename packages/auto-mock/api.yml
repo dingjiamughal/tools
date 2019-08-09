@@ -1,0 +1,19 @@
+'/list':
+  description: 'get list'
+
+  response:
+    items|1-10:
+      - id|+1: 0
+      - name: dingjia
+      - age: 25
+
+'/list/save':
+  description: 'save'
+  request:
+    key: asdf
+    value:
+      - q: zxzx
+      - w: asas
+      - e: qwqw
+  response:
+    code|0-1: 0

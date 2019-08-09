@@ -1,0 +1,24 @@
+{
+  "name": "auto-mock",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "mockapi": "./bin/www"
+  },
+  "scripts": {
+    "dev": "nodemon ./dev/index.js",
+    "generate": "node index.js --entry=./api.yml --output ./dev/generate.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mockjs": "^1.0.1-beta3",
+    "yargs": "^13.3.0"
+  },
+  "devDependencies": {
+    "js-yaml": "^3.13.1",
+    "nodemon": "^1.19.1"
+  }
+}
